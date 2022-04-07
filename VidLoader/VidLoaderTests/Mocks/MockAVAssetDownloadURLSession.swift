@@ -8,13 +8,9 @@
 
 import AVFoundation
 import Foundation
+import VidLoader
 
-final class MockAVAssetDownloadURLSession: AVAssetDownloadURLSession {
-
-    convenience init(noUse: Bool? = nil) {
-        self.init()
-    }
-    
+final class MockAVAssetDownloadURLSession: URLSession, MyAssetDownloadURLSession {
     var getAllTaskFuncCheck = EmptyFuncCheck()
     var getAllTasksStub: [MockAVAssetDownloadTask] = []
     override func getAllTasks(completionHandler: @escaping ([URLSessionTask]) -> Void) {
@@ -24,10 +20,10 @@ final class MockAVAssetDownloadURLSession: AVAssetDownloadURLSession {
     
     var makeAssetDownloadTaskFuncCheck = FuncCheck<String>()
     var makeAssetDownloadTaskStub: MockAVAssetDownloadTask?
-    override func makeAssetDownloadTask(asset URLAsset: AVURLAsset,
-                                        assetTitle title: String,
-                                        assetArtworkData artworkData: Data?,
-                                        options: [String : Any]? = nil) -> AVAssetDownloadTask? {
+    func makeMyAssetDownloadTask(asset URLAsset: AVURLAsset,
+                                 assetTitle title: String,
+                                 assetArtworkData artworkData: Data?,
+                                 options: [String : Any]? = nil) -> MyAssetDownloadTask? {
         makeAssetDownloadTaskFuncCheck.call(title)
         return makeAssetDownloadTaskStub
     }

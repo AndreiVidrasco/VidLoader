@@ -9,23 +9,27 @@ import AVFoundation
 @testable import VidLoader
 
 final class MockSession: Session {
+    func setup(injectedSession: MyAssetDownloadURLSession?, stateChanged: ((DownloadState, ItemInformation) -> Void)?) {
+        setup(injectedSession: injectedSession as? MockAVAssetDownloadURLSession, stateChanged: stateChanged)
+    }
+    
     var allTasksFuncCheck = EmptyFuncCheck()
-    var allTasksStub: [AVAssetDownloadTask] = []
-    func allTasks(completion: Completion<[AVAssetDownloadTask]>?) {
+    var allTasksStub: [MyAssetDownloadTask] = []
+    func allTasks(completion: Completion<[MyAssetDownloadTask]>?) {
         completion?(allTasksStub)
         allTasksFuncCheck.call()
     }
     
     var taskFuncCheck = FuncCheck<String>()
     var taskStub: MockAVAssetDownloadTask?
-    func task(identifier: String, completion: Completion<AVAssetDownloadTask?>?) {
+    func task(identifier: String, completion: Completion<MyAssetDownloadTask?>?) {
         taskFuncCheck.call(identifier)
         completion?(taskStub)
     }
     
     var addNewTaskFuncCheck = FuncCheck<(AVURLAsset, ItemInformation)>()
     var addNewTaskStub: MockAVAssetDownloadTask?
-    func addNewTask(urlAsset: AVURLAsset, for item: ItemInformation) -> AVAssetDownloadTask? {
+    func addNewTask(urlAsset: AVURLAsset, for item: ItemInformation) -> MyAssetDownloadTask? {
         addNewTaskFuncCheck.call((urlAsset, item))
         return addNewTaskStub
     }
@@ -52,9 +56,9 @@ final class MockSession: Session {
         resumeAllTasksFuncCheck.call()
     }
     
-    var setupFuncCheck = FuncCheck<AVAssetDownloadURLSession?>()
+    var setupFuncCheck = FuncCheck<MockAVAssetDownloadURLSession?>()
     var setupStub: ((DownloadState, ItemInformation) -> Void)?
-    func setup(injectedSession: AVAssetDownloadURLSession?, stateChanged: ((DownloadState, ItemInformation) -> Void)?) {
+    func setup(injectedSession: MockAVAssetDownloadURLSession?, stateChanged: ((DownloadState, ItemInformation) -> Void)?) {
         setupFuncCheck.call(injectedSession)
         setupStub = stateChanged
     }

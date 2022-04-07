@@ -24,7 +24,7 @@ final class DownloadSessionTests: XCTestCase {
     func test_GetAllTasks_SessionContainsActiveTasks_ResultContainsThem() {
         // GIVEN
         session.setup(injectedSession: avDownloadSession, stateChanged: nil)
-        var resultTasks: [AVAssetDownloadTask]?
+        var resultTasks: [MyAssetDownloadTask]?
         let expectedTasks = [MockAVAssetDownloadTask(), MockAVAssetDownloadTask()]
         avDownloadSession.getAllTasksStub = expectedTasks
         
@@ -34,7 +34,7 @@ final class DownloadSessionTests: XCTestCase {
         }
         
         // THEN
-        XCTAssertEqual(expectedTasks, resultTasks)
+        XCTAssertEqual(expectedTasks, resultTasks?.compactMap { $0 as? MockAVAssetDownloadTask })
     }
     
     func test_GetTask_SessionContainsActiveTask_ResultIsNotNil() {
@@ -44,7 +44,7 @@ final class DownloadSessionTests: XCTestCase {
         let expectedTask = MockAVAssetDownloadTask()
         let givenItem = ItemInformation.mock(identifier: givenIdentifier)
         (expectedTask as URLSessionTask).save(item: givenItem)
-        var resultTask: AVAssetDownloadTask?
+        var resultTask: MyAssetDownloadTask?
         avDownloadSession.getAllTasksStub = [expectedTask]
         
         // WHEN
@@ -53,14 +53,14 @@ final class DownloadSessionTests: XCTestCase {
         }
         
         // THEN
-        XCTAssertEqual(expectedTask, resultTask)
+        XCTAssertEqual(expectedTask, resultTask as? MockAVAssetDownloadTask)
     }
     
     func test_GetTask_SessionNotContainsTask_ResultIsNil() {
         // GIVEN
         session.setup(injectedSession: avDownloadSession, stateChanged: nil)
         let givenIdentifier = "task_to_search"
-        var resultTask: AVAssetDownloadTask?
+        var resultTask: MyAssetDownloadTask?
         avDownloadSession.getAllTasksStub = []
         
         // WHEN
@@ -97,7 +97,7 @@ final class DownloadSessionTests: XCTestCase {
         
         // THEN
         XCTAssertTrue(avDownloadSession.makeAssetDownloadTaskFuncCheck.wasCalled(with: givenTitle))
-        XCTAssertEqual(expectedTask, resultTask)
+        XCTAssertEqual(expectedTask, resultTask as? MockAVAssetDownloadTask)
         XCTAssertEqual(expectedState, resultState)
         XCTAssertEqual(expectedItem, resultItem)
     }
@@ -240,7 +240,7 @@ final class DownloadSessionTests: XCTestCase {
         let givenTask = MockAVAssetDownloadTask()
         
         // WHEN
-        session.urlSession(avDownloadSession, assetDownloadTask: givenTask, didFinishDownloadingTo: .mock())
+        session.myURLSession(avDownloadSession, assetDownloadTask: givenTask, didFinishDownloadingTo: .mock())
         
         // THEN
         XCTAssertNil(resultState)
@@ -265,7 +265,7 @@ final class DownloadSessionTests: XCTestCase {
         givenTask.save(item: givenItem)
         
         // WHEN
-        session.urlSession(avDownloadSession, assetDownloadTask: givenTask, didFinishDownloadingTo: givenURL)
+        session.myURLSession(avDownloadSession, assetDownloadTask: givenTask, didFinishDownloadingTo: givenURL)
         
         // THEN
         XCTAssertEqual(expectedState, resultState)
@@ -290,7 +290,7 @@ final class DownloadSessionTests: XCTestCase {
         givenTask.save(item: givenItem)
         
         // WHEN
-        session.urlSession(avDownloadSession, assetDownloadTask: givenTask, didFinishDownloadingTo: givenURL)
+        session.myURLSession(avDownloadSession, assetDownloadTask: givenTask, didFinishDownloadingTo: givenURL)
         
         // THEN
         XCTAssertEqual(expectedState, resultState)
@@ -315,7 +315,7 @@ final class DownloadSessionTests: XCTestCase {
         givenTask.save(item: givenItem)
         
         // WHEN
-        session.urlSession(avDownloadSession, assetDownloadTask: givenTask, didFinishDownloadingTo: givenURL)
+        session.myURLSession(avDownloadSession, assetDownloadTask: givenTask, didFinishDownloadingTo: givenURL)
         
         // THEN
         XCTAssertEqual(expectedState, resultState)
@@ -340,7 +340,7 @@ final class DownloadSessionTests: XCTestCase {
         givenTask.save(item: givenItem)
         
         // WHEN
-        session.urlSession(avDownloadSession, assetDownloadTask: givenTask, didFinishDownloadingTo: givenURL)
+        session.myURLSession(avDownloadSession, assetDownloadTask: givenTask, didFinishDownloadingTo: givenURL)
         
         // THEN
         XCTAssertEqual(expectedState, resultState)
@@ -367,7 +367,7 @@ final class DownloadSessionTests: XCTestCase {
         givenTask.save(item: givenItem)
         
         // WHEN
-        session.urlSession(avDownloadSession, assetDownloadTask: givenTask, didFinishDownloadingTo: givenURL)
+        session.myURLSession(avDownloadSession, assetDownloadTask: givenTask, didFinishDownloadingTo: givenURL)
         
         // THEN
         XCTAssertEqual(expectedState, resultState)
@@ -392,7 +392,7 @@ final class DownloadSessionTests: XCTestCase {
         givenTask.save(item: givenItem)
         
         // WHEN
-        session.urlSession(avDownloadSession, assetDownloadTask: givenTask, didFinishDownloadingTo: givenURL)
+        session.myURLSession(avDownloadSession, assetDownloadTask: givenTask, didFinishDownloadingTo: givenURL)
         
         // THEN
         XCTAssertEqual(expectedState, resultState)
@@ -414,7 +414,7 @@ final class DownloadSessionTests: XCTestCase {
         givenTask.save(item: givenItem)
         
         // WHEN
-        session.urlSession(avDownloadSession, assetDownloadTask: givenTask,
+        session.myURLSession(avDownloadSession, assetDownloadTask: givenTask,
                            didLoad: .mock(), totalTimeRangesLoaded: [],
                            timeRangeExpectedToLoad: .mock())
 
@@ -435,7 +435,7 @@ final class DownloadSessionTests: XCTestCase {
         givenTask.stateStub = .running
         
         // WHEN
-        session.urlSession(avDownloadSession, assetDownloadTask: givenTask,
+        session.myURLSession(avDownloadSession, assetDownloadTask: givenTask,
                            didLoad: .mock(), totalTimeRangesLoaded: [],
                            timeRangeExpectedToLoad: .mock())
 
@@ -465,7 +465,7 @@ final class DownloadSessionTests: XCTestCase {
         givenTask.save(item: givenItem)
         
         // WHEN
-        session.urlSession(avDownloadSession,
+        session.myURLSession(avDownloadSession,
                            assetDownloadTask: givenTask,
                            didLoad: .mock(),
                            totalTimeRangesLoaded: [.mock(timeRange: .mock(start: .zero, duration: .mock(seconds: 10, scale: 1)))],

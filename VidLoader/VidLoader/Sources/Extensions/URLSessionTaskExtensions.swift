@@ -9,7 +9,7 @@
 import Foundation
 
 extension URLSessionTask {
-    var item: ItemInformation? {
+    public var item: ItemInformation? {
         guard let data = taskDescription?.data else { return nil }
 
         return try? JSONDecoder().decode(ItemInformation.self, from: data)
@@ -25,7 +25,7 @@ extension URLSessionTask {
         }
     }
 
-    func update(progress: Double, downloadedBytes: Int64) {
+    public func update(progress: Double, downloadedBytes: Int64) {
         let bytes = Int(exactly: downloadedBytes) ?? .max
         item
             ?|> ItemInformation._progress .~ progress
@@ -33,19 +33,19 @@ extension URLSessionTask {
             ?|> save
     }
 
-    func update(location: URL) {
+    public func update(location: URL) {
         item
             ?|> ItemInformation._path .~ location.relativePath
             ?|> save
     }
 
-    func update(state: DownloadState) {
+    public func update(state: DownloadState) {
         item
             ?|> ItemInformation._state .~ state
             ?|> save
     }
 
-    func save(item: ItemInformation) {
+    public func save(item: ItemInformation) {
         taskDescription = (try? JSONEncoder().encode(item))?.string
     }
 }

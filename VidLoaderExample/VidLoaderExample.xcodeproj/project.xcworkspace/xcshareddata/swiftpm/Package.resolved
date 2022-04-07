@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "vidloader",
+      "kind" : "remoteSourceControl",
+      "location" : "git@github.com:AndreiVidrasco/VidLoader.git",
+      "state" : {
+        "branch" : "master",
+        "revision" : "e7dd428ea838783e22c27838b29eafe428cd6424"
+      }
+    }
+  ],
+  "version" : 2
+}

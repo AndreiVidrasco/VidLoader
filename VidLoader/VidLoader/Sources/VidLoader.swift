@@ -265,7 +265,7 @@ public final class VidLoader: VidLoadable {
     }
 
     func setupResourceDelegate(item: ItemInformation,
-                               task: AVAssetDownloadTask,
+                               task: MyAssetDownloadTask,
                                streamResource: StreamResource) {
         let keyDidLoad: () -> Void = { [weak self] in
             guard let upToDateItem = task.item else { return }

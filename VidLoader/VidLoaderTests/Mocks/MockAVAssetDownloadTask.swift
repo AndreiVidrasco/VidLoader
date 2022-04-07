@@ -7,14 +7,10 @@
 //
 
 import AVFoundation
+@testable import VidLoader
 
-final class MockAVAssetDownloadTask: AVAssetDownloadTask {
-    
-    convenience init(noUse: Bool? = nil) {
-        self.init()
-    }
-    
-    override var urlAsset: AVURLAsset {
+final class MockAVAssetDownloadTask: URLSessionTask, MyAssetDownloadTask {
+    var urlAsset: AVURLAsset {
         return .mock()
     }
 
